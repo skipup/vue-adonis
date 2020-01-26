@@ -22,7 +22,7 @@ class ProjectController {
     const user = await auth.getUser();
     const { id } = params;
     const project = await Project.find(id);
-    Authorization.verifyPermission(project, user);
+    //  Authorization.verifyPermission(project, user);
     // if (project.user_id !== user.id) {
     //   return {
     //     message: "fail",
@@ -30,6 +30,16 @@ class ProjectController {
     //   };
     // }
     await project.delete();
+    return project;
+  }
+
+  async update({ auth, request, params }) {
+    const user = await auth.getUser();
+    const { id } = params;
+    const project = await Project.find(id);
+    Authorization.verifyPermission(project, user);
+    project.merge(request.only("title"));
+    await project.save();
     return project;
   }
 }
